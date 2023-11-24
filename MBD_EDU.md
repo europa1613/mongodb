@@ -1,5 +1,16 @@
+### Connecting to a MongoDB Database
 
-### Lab: Connecting to a MongoDB Atlas Cluster with the Shell
+Unit 5 Lesson 2 Connecting to a MongoDB Atlas Cluster with the Shell
+
+**Node REPL**
+```javascript
+const grettings = ["Hello", "world", "welcome"];
+const loopArray = arr => arr.forEach(i => console.log(i));
+loopArray(greetings);
+
+```
+
+#### Lab: 
 
 ```sh
 $ MY_ATLAS_CONNECTION_STRING=$(atlas clusters connectionStrings describe myAtlasClusterEDU | sed "1 d")
@@ -32,10 +43,12 @@ public class Connection {
 }
 
 ```
+
 ```sh
 mvn --quiet compile
 mvn --quiet exec:java -Dexec.mainClass=com.mdbu.app.Connection
 ```
+
 ### MongoDB CRUD Operations: Insert and Find Documents
 
 #### Inserting Documents in a MongoDB Collection
@@ -159,35 +172,45 @@ db.sales.find({ storeLocation: { $in: ["London", "New York"] } });
 Review the following comparison operators: $gt, $lt, $lte, and $gte.
 
 ##### `$gt`
+
 Use the $gt operator to match documents with a field greater than the given value. For example:
 
 ```javascript
-db.sales.find({ "items.price": { $gt: 50}})
+db.sales.find({ "items.price": { $gt: 50 } });
 ```
+
 ##### `$lt`
+
 Use the $lt operator to match documents with a field less than the given value. For example:
 
 ```javascript
-db.sales.find({ "items.price": { $lt: 50}})
+db.sales.find({ "items.price": { $lt: 50 } });
 ```
+
 ##### `$lte`
+
 Use the $lte operator to match documents with a field less than or equal to the given value. For example:
 
 ```javascript
-db.sales.find({ "customer.age": { $lte: 65}})
+db.sales.find({ "customer.age": { $lte: 65 } });
 ```
+
 ##### `$gte`
+
 Use the $gte operator to match documents with a field greater than or equal to the given value. For example:
 
 ```javascript
-db.sales.find({ "customer.age": { $gte: 65}})
+db.sales.find({ "customer.age": { $gte: 65 } });
 ```
+
 ##### Querying on Array Elements in MongoDB
 
 ##### Queries for scalar products also
+
 ```javascript
-db.accounts.find({ products: "InvestmentFund"})
+db.accounts.find({ products: "InvestmentFund" });
 ```
+
 **Only if part of an array:**
 
 ```javascript
@@ -218,18 +241,22 @@ Find a Document by Using Implicit `$and`
 Use implicit `$and` to select documents that match multiple expressions.
 
 **For example:**
+
 ```javascript
-db.routes.find({ "airline.name": "Southwest Airlines", stops: { $gte: 1 } })
+db.routes.find({ "airline.name": "Southwest Airlines", stops: { $gte: 1 } });
 ```
+
 Find a Document by Using the `$or` Operator
 Use the `$or` operator to select documents that match at least one of the included expressions.
 
 **For example:**
+
 ```javascript
 db.routes.find({
-  $or: [{ dst_airport: "SEA" }, { src_airport: "SEA" }]
-})
+    $or: [{ dst_airport: "SEA" }, { src_airport: "SEA" }],
+});
 ```
+
 Find a Document by Using the `$and` Operator
 Use the `$and` operator to use multiple `$or` expressions in your query.
 
@@ -545,15 +572,19 @@ Review the following code, which demonstrates how to sort and limit query result
 Use `cursor.sort()` to return query results in a specified order. Within the parentheses of `sort()`, include an object that specifies the field(s) to sort by and the order of the sort. Use 1 for ascending order, and -1 for descending order.
 
 **Syntax:**
+
 ```javascript
 db.collection.find(<query>).sort(<sort>)
 ```
+
 **Example:**
+
 ```javascript
 // Return data on all music companies, sorted alphabetically from A to Z.
 db.companies.find({ category_code: "music" }).sort({ name: 1 });
 ```
-To ensure documents are returned in a consistent order, include a field that contains unique values in the sort. An easy way to do this is to include the _id field in the sort. Here's an example:
+
+To ensure documents are returned in a consistent order, include a field that contains unique values in the sort. An easy way to do this is to include the \_id field in the sort. Here's an example:
 
 ```javascript
 // Return data on all music companies, sorted alphabetically from A to Z. Ensure consistent sort order
@@ -565,6 +596,7 @@ db.companies.find({ category_code: "music" }).sort({ name: 1, _id: 1 });
 Use `cursor.limit()` to return query results in a specified order. Within the parentheses of limit(), specify the maximum number of documents to return.
 
 **Syntax:**
+
 ```javascript
 db.companies.find(<query>).limit(<number>)
 ```
@@ -1063,6 +1095,7 @@ try {
 ```
 
 #### Lab
+
 ```java
 
 package com.mdbu.app;
@@ -1170,14 +1203,17 @@ public class Transaction {
 ```
 
 ### Introduction to MongoDB Aggregation
+
 This section contains key definitions for this lesson, as well as the code for an aggregation pipeline.
 
 #### Definitions
+
 **Aggregation:** Collection and summary of data
 **Stage:** One of the built-in methods that can be completed on the data, but does not permanently alter it
 **Aggregation pipeline:** A series of stages completed on the data in order
 
 #### Structure of an Aggregation Pipeline
+
 ```javascript
 db.collection.aggregate([
     {
@@ -1193,10 +1229,13 @@ db.collection.aggregate([
 ```
 
 #### Using `$match` and `$group` Stages in a MongoDB Aggregation Pipeline
+
 Review the following sections, which show the code for the $match and $group aggregation stages.
 
 #### `$match`
+
 The `$match` stage filters for documents that match specified conditions. Here's the code for `$match`:
+
 ```javascript
 {
   $match: {
@@ -1204,8 +1243,11 @@ The `$match` stage filters for documents that match specified conditions. Here's
   }
 }
 ```
-####  $group
+
+#### $group
+
 The `$group` stage groups documents by a group key.
+
 ```javascript
 {
   $group:
@@ -1215,55 +1257,62 @@ The `$group` stage groups documents by a group key.
     }
  }
 ```
+
 #### `$match` and `$group` in an Aggregation Pipeline
+
 The following aggregation pipeline finds the documents with a field named "state" that matches a value "CA" and then groups those documents by the group key "$city" and shows the total number of zip codes in the state of California.
+
 ```javascript
 db.zips.aggregate([
-{   
-   $match: { 
-      state: "CA"
-    }
-},
-{
-   $group: {
-      _id: "$city",
-      totalZips: { $count : { } }
-   }
-}
-])
+    {
+        $match: {
+            state: "CA",
+        },
+    },
+    {
+        $group: {
+            _id: "$city",
+            totalZips: { $count: {} },
+        },
+    },
+]);
 ```
+
 ##### Lab
+
 ```javascript
 db.sightings.aggregate([
-  {
-    $match: {
-        species_common: 'Eastern Bluebird'
-    }
-  }, {
-    $group: {
-        _id: '$location.coordinates',
-        number_of_sightings: {
-            $count: {}
-        }
-    }
-  }
-])
-
-//output
-[
-  { _id: [ 41, -74 ], number_of_sightings: 1 },
-  { _id: [ 40, -74 ], number_of_sightings: 3 },
-  { _id: [ 40, -73 ], number_of_sightings: 1 }
-]
-
+    {
+        $match: {
+            species_common: "Eastern Bluebird",
+        },
+    },
+    {
+        $group: {
+            _id: "$location.coordinates",
+            number_of_sightings: {
+                $count: {},
+            },
+        },
+    },
+])[
+    //output
+    ({ _id: [41, -74], number_of_sightings: 1 },
+    { _id: [40, -74], number_of_sightings: 3 },
+    { _id: [40, -73], number_of_sightings: 1 })
+];
 ```
 
 ---
+
 #### Using `$sort` and `$limit` Stages in a MongoDB Aggregation Pipeline
+
 Review the following sections, which show the code for the `$sort` and `$limit` aggregation stages.
 
 ##### `$sort`
+
 The `$sort` stage sorts all input documents and returns them to the pipeline in sorted order. We use 1 to represent ascending order, and -1 to represent descending order.
+
 ```javascript
 {
     $sort: {
@@ -1273,52 +1322,59 @@ The `$sort` stage sorts all input documents and returns them to the pipeline in 
 ```
 
 ##### $limit
+
 The `$limit` stage returns only a specified number of records.
+
 ```javascript
 {
-  $limit: 5
+    $limit: 5;
 }
 ```
 
 ##### `$sort` and `$limit` in an Aggregation Pipeline
+
 The following aggregation pipeline sorts the documents in descending order, so the documents with the greatest pop value appear first, and limits the output to only the first five documents after sorting.
+
 ```javascript
 db.zips.aggregate([
-{
-  $sort: {
-    pop: -1
-  }
-},
-{
-  $limit:  5
-}
-])
+    {
+        $sort: {
+            pop: -1,
+        },
+    },
+    {
+        $limit: 5,
+    },
+]);
 ```
+
 #### Lab
+
 ```javascript
-
 db.sightings.aggregate([
-  {
-    $sort: {
-        'location.coordinates.1': -1 // <==== Array .<index> reference
-    }
-  }, {
-    $limit: 4
-  }
-])
-
+    {
+        $sort: {
+            "location.coordinates.1": -1, // <==== Array .<index> reference
+        },
+    },
+    {
+        $limit: 4,
+    },
+]);
 ```
-
 
 ### Using `$project`, `$count`, and $`set` Stages in a MongoDB Aggregation Pipeline
+
 Review the following sections, which show the code for the `$project`, `$set`, and `$count`aggregation stages.
 
 #### `$project`
+
 The `$project` stage specifies the fields of the output documents. 1 means that the field should be included, and 0 means that the field should be supressed. The field can also be assigned a new value.
+
 ```javascript
 {
     $project: {
-        state:1, 
+        state:1,
         zip:1,
         population:"$pop",
         _id:0
@@ -1327,7 +1383,9 @@ The `$project` stage specifies the fields of the output documents. 1 means that 
 ```
 
 #### `$set`
+
 The `$set` stage creates new fields or changes the value of existing fields, and then outputs the documents with the new fields.
+
 ```javascript
 {
     $set: {
@@ -1338,11 +1396,14 @@ The `$set` stage creates new fields or changes the value of existing fields, and
      }
   }
 ```
+
 #### `$count`
+
 The `$count` stage creates a new document, with the number of documents at that stage in the aggregation pipeline assigned to the specified field name.
+
 ```javascript
 {
-  $count: "total_zips"
+    $count: "total_zips";
 }
 ```
 
@@ -1351,72 +1412,74 @@ The `$count` stage creates a new document, with the number of documents at that 
 ```javascript
 //$project
 db.sightings.aggregate([
-  {
-    $project: {
-        _id: 0,
-        species_common: 1,
-        date: 1
-    }
-  }
-])
+    {
+        $project: {
+            _id: 0,
+            species_common: 1,
+            date: 1,
+        },
+    },
+]);
 
 //$set
 db.birds.aggregate([
-  {
-    $set: {
-      'class': 'bird'
-    }
-  }
-])
+    {
+        $set: {
+            class: "bird",
+        },
+    },
+]);
 
 //$count
 db.sightings.aggregate([
-{
-  $match: {
-    date: {
-      $gt: ISODate('2022-01-01T00:00:00.000Z'),
-      $lt: ISODate('2023-01-01T00:00:00.000Z')
+    {
+        $match: {
+            date: {
+                $gt: ISODate("2022-01-01T00:00:00.000Z"),
+                $lt: ISODate("2023-01-01T00:00:00.000Z"),
+            },
+            species_common: "Eastern Bluebird",
+        },
     },
-    species_common: 'Eastern Bluebird'
-  }
-}, {
-  $count: 'bluebird_sightings_2022'
-}
-])
+    {
+        $count: "bluebird_sightings_2022",
+    },
+]);
 ```
+
 ##### Lab `$out`
+
 ```javascript
 db.sightings.aggregate([
-  {
-    $match: {
-      date: {
-        $gte: ISODate('2022-01-01T00:00:00.0Z'),
-        $lt: ISODate('2023-01-01T00:00:00.0Z')
-      }
-    }
-  },
-  {
-    $out: 'sightings_2022'
-  }
-])
+    {
+        $match: {
+            date: {
+                $gte: ISODate("2022-01-01T00:00:00.0Z"),
+                $lt: ISODate("2023-01-01T00:00:00.0Z"),
+            },
+        },
+    },
+    {
+        $out: "sightings_2022",
+    },
+]);
 
 //findOne from the $out collection
-db.sightings_2022.findOne()
-
+db.sightings_2022.findOne();
 ```
 
-
 #### Summary MongoDB Aggregation
+
 In this unit, you learned how to use aggregation in MongoDB and create an aggregation pipeline. You also learned how to use several of the most common aggregation stages, including:
 
-- $match
-- $group
-- $sort
-- $limit
-- $project
-- $count
-- $set
-- $out
+-   $match
+-   $group
+-   $sort
+-   $limit
+-   $project
+-   $count
+-   $set
+-   $out
 
 ### MongoDB Aggregation with Java
 
@@ -1467,10 +1530,12 @@ private static void matchAndGroupStages(MongoCollection<Document> accounts){
 }
 
 ```
+
 ##### Lab `$match` & `group`
 
 **DemoApp.java**
-```java 
+
+```java
 package com.mdbu.app;
 
 import ch.qos.logback.classic.Level;
@@ -1519,8 +1584,10 @@ public class DemoApp {
     }
 }
 ```
+
 **Aggregation.java**
-```java 
+
+```java
 package com.mdbu.aggregations;
 
 import com.mongodb.client.AggregateIterable;
@@ -1555,14 +1622,16 @@ public class Aggregation {
         System.out.println("Display aggregation results");
         accounts.aggregate(Arrays.asList(matchStage, groupStage)).forEach(document->System.out.print(document.toJson()));
     }
-    
+
 }
 ```
 
 #### Using `$sort` and `$project`
+
 Review the following code, which demonstrates how to build the `$sort` and `$project` stages of an aggregation pipeline in MongoDB with Java.
 
 #### `$sort` and `$project`
+
 In the following example, we use the `Aggregates` builder class to build the `$sort` and `$project` stages of an aggregation pipeline. This pipeline finds all checking accounts with a balance greater than 1500 and sorts the results in descending order. The query will return only four fields, including a newly computed Euro balance.
 
 The `match()` method creates a `$match` pipeline stage that matches incoming documents against the specified query filter and filters out documents that don't match. Then, the `sort()` method creates a `$sort` pipeline stage to sort by the specified criteria. Finally, the `project()` method creates a `$project` pipeline stage that projects specified document fields. Field projection in aggregation follows the same rules as field projection in queries.
@@ -1591,6 +1660,7 @@ private static void matchSortAndProjectStages(MongoCollection<Document> accounts
 #### Lab Aggregation with the MongoDB Driver for Java (match,sort, project)
 
 **DemoApp.java**
+
 ```java
 package com.mdbu.app;
 
@@ -1641,7 +1711,9 @@ public class DemoApp {
 }
 
 ```
+
 **Aggregation.java**
+
 ```java
 package com.mdbu.aggregations;
 
@@ -1677,6 +1749,274 @@ public class Aggregation {
         System.out.println("Display aggregation results");
         accounts.aggregate(asList(matchStage,sortStage, projectStage)).forEach(document -> System.out.print(document.toJson()));
     }
-    
+
 }
+```
+
+### MongoDB Indexes
+
+#### Creating a Single Field Index
+
+Review the code below, which demonstrates how to create a single field index in a collection.
+
+#### Create a Single Field Index
+
+Use `createIndex()` to create a new index in a collection. Within the parentheses of `createIndex()`, include an object that contains the field and sort order.
+
+```javascript
+db.customers.createIndex({
+    birthdate: 1,
+});
+```
+
+#### Create a Unique Single Field Index
+
+Add `{unique:true}` as a second, optional, parameter in `createIndex()` to force uniqueness in the index field values. Once the unique index is created, any inserts or updates including duplicated values in the collection for the index field/s will fail.
+
+```javascript
+db.customers.createIndex(
+    {
+        email: 1,
+    },
+    {
+        unique: true,
+    }
+);
+```
+
+MongoDB only creates the unique index if there is no duplication in the field values for the index field/s.
+
+#### View the Indexes used in a Collection
+
+Use `getIndexes()` to see all the indexes created in a collection.
+
+```javascript
+db.customers.getIndexes();
+```
+
+#### Check if an index is being used on a query
+
+Use `explain()` in a collection when running a query to see the Execution plan. This plan provides the details of the execution stages (IXSCAN , COLLSCAN, FETCH, SORT, etc.).
+
+-   The IXSCAN stage indicates the query is using an index and what index is being selected.
+-   The COLLSCAN stage indicates a collection scan is perform, not using any indexes.
+-   The FETCH stage indicates documents are being read from the collection.
+-   The SORT stage indicates documents are being sorted in memory.
+
+```javascript
+db.customers.explain().find({
+    birthdate: {
+        $gt: ISODate("1995-08-01"),
+    },
+});
+//-----------------------------
+db.customers
+    .explain()
+    .find({
+        birthdate: {
+            $gt: ISODate("1995-08-01"),
+        },
+    })
+    .sort({
+        email: 1,
+    });
+```
+
+### Understanding Multikey Indexes
+
+Review the code below, which demonstrates how multikey indexes work. If a single field or compound index includes an array field, then the index is a multikey index.
+
+#### Create a Single field Multikey Index
+
+Use `createIndex()` to create a new index in a collection. Include an object as parameter that contains the array field and sort order. In this example `accounts` is an array field.
+
+```javascript
+db.customers.createIndex({
+    accounts: 1,
+});
+```
+
+#### View the Indexes used in a Collection
+
+Use `getIndexes()` to see all the indexes created in a collection.
+
+```javascript
+db.customers.getIndexes();
+```
+
+#### Check if an index is being used on a query
+
+Use `explain()` in a collection when running a query to see the Execution plan. This plan provides the details of the execution stages (IXSCAN , COLLSCAN, FETCH, SORT, etc.).
+
+-   The `IXSCAN` stage indicates the query is using an index and what index is being selected.
+-   The `COLLSCAN` stage indicates a collection scan is perform, not using any indexes.
+-   The `FETCH` stage indicates documents are being read from the collection.
+-   The `SORT` stage indicates documents are being sorted in memory.
+
+```javascript
+db.customers.explain().find({
+    accounts: 627788,
+});
+```
+
+---
+
+### Working with Compound Indexes
+
+Review the code below, which demonstrates how to create a compound index in a collection.
+
+#### Create a Compound Index
+
+Use `createIndex()` to create a new index in a collection. Within the parentheses of `createIndex()`, include an object that contains two or more fields and their sort order.
+
+```javascript
+db.customers.createIndex({
+    active: 1,
+    birthdate: -1,
+    name: 1,
+});
+```
+
+#### Order of Fields in a Compound Index
+
+The order of the fields matters when creating the index and the sort order. It is recommended to list the fields in the following order: **Equality**, **Sort**, and **Range**.
+
+-   Equality: field/s that matches on a single field value in a query
+-   Sort: field/s that orders the results by in a query
+-   Range: field/s that the query filter in a range of valid values
+
+The following query includes an equality match on the active field, a sort on birthday (descending) and name (ascending), and a range query on birthday too.
+
+```javascript
+db.customers
+    .find({
+        birthdate: {
+            $gte: ISODate("1977-01-01"),
+        },
+        active: true,
+    })
+    .sort({
+        birthdate: -1,
+        name: 1,
+    });
+```
+
+Here's an example of an efficient index for this query:
+
+```javascript
+db.customers.createIndex({
+    active: 1,
+    birthdate: -1,
+    name: 1,
+});
+```
+
+#### View the Indexes used in a Collection
+
+Use `getIndexes()` to see all the indexes created in a collection.
+
+```javascript
+db.customers.getIndexes();
+```
+
+#### Check if an index is being used on a query
+
+Use `explain()` in a collection when running a query to see the Execution plan. This plan provides the details of the execution stages (IXSCAN , COLLSCAN, FETCH, SORT, etc.). Some of these are:
+
+-   The `IXSCAN` stage indicates the query is using an index and what index is being selected.
+-   The `COLLSCAN` stage indicates a collection scan is perform, not using any indexes.
+-   The `FETCH` stage indicates documents are being read from the collection.
+-   The `SORT` stage indicates documents are being sorted in memory.
+
+```javascript
+db.customers
+    .explain()
+    .find({
+        birthdate: {
+            $gte: ISODate("1977-01-01"),
+        },
+        active: true,
+    })
+    .sort({
+        birthdate: -1,
+        name: 1,
+    });
+```
+
+#### Cover a query by the Index
+
+An Index covers a query when MongoDB does not need to fetch the data from memory since all the required data is already returned by the index.
+
+In most cases, we can use projections to return only the required fields and cover the query. Make sure those fields in the projection are in the index.
+
+By adding the projection `{name:1,birthdate:1,_id:0}` in the previous query, we can limit the returned fields to only `name` and `birthdate`. These fields are part of the index and when we run the `explain()` command, the execution plan shows only two stages:
+
+-   `IXSCAN` - Index scan using the compound index
+-   `PROJECTION_COVERED` - All the information needed is returned by the index, no need to fetch from memory
+
+```javascript
+db.customers
+    .explain()
+    .find(
+        {
+            birthdate: {
+                $gte: ISODate("1977-01-01"),
+            },
+            active: true,
+        },
+        { name: 1, birthdate: 1, _id: 0 }
+    )
+    .sort({
+        birthdate: -1,
+        name: 1,
+    });
+```
+
+##### Lab
+
+```javascript
+db.accounts
+    .explain()
+    .find(
+        { account_holder: "Andrea", balance: { $gt: 5 } },
+        { account_holder: 1, balance: 1, account_type: 1, _id: 0 }
+    )
+    .sort({ balance: 1 });
+```
+#### Deleting an Index
+Review the code below, which demonstrates how to delete indexes in a collection.
+
+
+#### View the Indexes used in a Collection
+Use `getIndexes()` to see all the indexes created in a collection. There is always a default index in every collection on `_id` field. This index is used by MongoDB internally and cannot be deleted.
+```javascript
+db.customers.getIndexes()
+```
+#### Delete an Index
+Use `dropIndex()` to delete an existing index from a collection. Within the parentheses of `dropIndex()`, include an object representing the index key or provide the index name as a string.
+
+#### Delete index by name:
+```javascript
+db.customers.dropIndex(
+  'active_1_birthdate_-1_name_1'
+)
+```
+#### Delete index by key:
+```javascript
+db.customers.dropIndex({
+  active:1,
+  birthdate:-1, 
+  name:1
+})
+```
+#### Delete Indexes
+Use `dropIndexes()` to delete all the indexes from a collection, with the exception of the default index on _id.
+```javascript
+db.customers.dropIndexes()
+```
+The `dropIndexes()` command also can accept an array of index names as a parameter to delete a specific list of indexes.
+```javascript
+db.collection.dropIndexes([
+  'index1name', 'index2name', 'index3name'
+  ])
 ```
