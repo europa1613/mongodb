@@ -32,10 +32,10 @@ public class Connection {
 }
 
 ```
-
+```sh
 mvn --quiet compile
 mvn --quiet exec:java -Dexec.mainClass=com.mdbu.app.Connection
-
+```
 ### MongoDB CRUD Operations: Insert and Find Documents
 
 #### Inserting Documents in a MongoDB Collection
@@ -158,31 +158,36 @@ db.sales.find({ storeLocation: { $in: ["London", "New York"] } });
 
 Review the following comparison operators: $gt, $lt, $lte, and $gte.
 
-`$gt`
+##### `$gt`
 Use the $gt operator to match documents with a field greater than the given value. For example:
 
-`db.sales.find({ "items.price": { $gt: 50}})`
-
-`$lt`
+```javascript
+db.sales.find({ "items.price": { $gt: 50}})
+```
+##### `$lt`
 Use the $lt operator to match documents with a field less than the given value. For example:
 
-`db.sales.find({ "items.price": { $lt: 50}})`
-
-`$lte`
+```javascript
+db.sales.find({ "items.price": { $lt: 50}})
+```
+##### `$lte`
 Use the $lte operator to match documents with a field less than or equal to the given value. For example:
 
-`db.sales.find({ "customer.age": { $lte: 65}})`
-
-`$gte`
+```javascript
+db.sales.find({ "customer.age": { $lte: 65}})
+```
+##### `$gte`
 Use the $gte operator to match documents with a field greater than or equal to the given value. For example:
 
-`db.sales.find({ "customer.age": { $gte: 65}})`
-
+```javascript
+db.sales.find({ "customer.age": { $gte: 65}})
+```
 ##### Querying on Array Elements in MongoDB
 
-Queries for scalar products also
-`db.accounts.find({ products: "InvestmentFund"})`
-
+##### Queries for scalar products also
+```javascript
+db.accounts.find({ products: "InvestmentFund"})
+```
 **Only if part of an array:**
 
 ```javascript
@@ -213,18 +218,18 @@ Find a Document by Using Implicit `$and`
 Use implicit `$and` to select documents that match multiple expressions.
 
 **For example:**
-
-`db.routes.find({ "airline.name": "Southwest Airlines", stops: { $gte: 1 } })`
-
+```javascript
+db.routes.find({ "airline.name": "Southwest Airlines", stops: { $gte: 1 } })
+```
 Find a Document by Using the `$or` Operator
 Use the `$or` operator to select documents that match at least one of the included expressions.
 
 **For example:**
-
-`db.routes.find({
+```javascript
+db.routes.find({
   $or: [{ dst_airport: "SEA" }, { src_airport: "SEA" }]
-})`
-
+})
+```
 Find a Document by Using the `$and` Operator
 Use the `$and` operator to use multiple `$or` expressions in your query.
 
@@ -258,7 +263,7 @@ Return every document in the sales collection that meets one of the following cr
 -   Item with the name of pens
 -   Item with a writing tag
 
-```json
+```java
 {
   _id: ObjectId("5bd761dcae323e45a93ccfe9"),
   saleDate: ISODate("2015-08-25T10:01:02.918Z"),
@@ -540,14 +545,15 @@ Review the following code, which demonstrates how to sort and limit query result
 Use `cursor.sort()` to return query results in a specified order. Within the parentheses of `sort()`, include an object that specifies the field(s) to sort by and the order of the sort. Use 1 for ascending order, and -1 for descending order.
 
 **Syntax:**
-
-`db.collection.find(<query>).sort(<sort>)`
-
+```javascript
+db.collection.find(<query>).sort(<sort>)
+```
 **Example:**
-
+```javascript
 // Return data on all music companies, sorted alphabetically from A to Z.
 db.companies.find({ category_code: "music" }).sort({ name: 1 });
-To ensure documents are returned in a consistent order, include a field that contains unique values in the sort. An easy way to do this is to include the \_id field in the sort. Here's an example:
+```
+To ensure documents are returned in a consistent order, include a field that contains unique values in the sort. An easy way to do this is to include the _id field in the sort. Here's an example:
 
 ```javascript
 // Return data on all music companies, sorted alphabetically from A to Z. Ensure consistent sort order
@@ -559,7 +565,7 @@ db.companies.find({ category_code: "music" }).sort({ name: 1, _id: 1 });
 Use `cursor.limit()` to return query results in a specified order. Within the parentheses of limit(), specify the maximum number of documents to return.
 
 **Syntax:**
-```
+```javascript
 db.companies.find(<query>).limit(<number>)
 ```
 
@@ -1226,6 +1232,32 @@ db.zips.aggregate([
 }
 ])
 ```
+##### Lab
+```javascript
+db.sightings.aggregate([
+  {
+    $match: {
+        species_common: 'Eastern Bluebird'
+    }
+  }, {
+    $group: {
+        _id: '$location.coordinates',
+        number_of_sightings: {
+            $count: {}
+        }
+    }
+  }
+])
+
+//output
+[
+  { _id: [ 41, -74 ], number_of_sightings: 1 },
+  { _id: [ 40, -74 ], number_of_sightings: 3 },
+  { _id: [ 40, -73 ], number_of_sightings: 1 }
+]
+
+```
+
 ---
 #### Using `$sort` and `$limit` Stages in a MongoDB Aggregation Pipeline
 Review the following sections, which show the code for the `$sort` and `$limit` aggregation stages.
@@ -1262,6 +1294,21 @@ db.zips.aggregate([
 }
 ])
 ```
+#### Lab
+```javascript
+
+db.sightings.aggregate([
+  {
+    $sort: {
+        'location.coordinates.1': -1 // <==== Array .<index> reference
+    }
+  }, {
+    $limit: 4
+  }
+])
+
+```
+
 
 ### Using `$project`, `$count`, and $`set` Stages in a MongoDB Aggregation Pipeline
 Review the following sections, which show the code for the `$project`, `$set`, and `$count`aggregation stages.
@@ -1299,6 +1346,66 @@ The `$count` stage creates a new document, with the number of documents at that 
 }
 ```
 
+##### Lab `$project`, `$set` & `$count`
+
+```javascript
+//$project
+db.sightings.aggregate([
+  {
+    $project: {
+        _id: 0,
+        species_common: 1,
+        date: 1
+    }
+  }
+])
+
+//$set
+db.birds.aggregate([
+  {
+    $set: {
+      'class': 'bird'
+    }
+  }
+])
+
+//$count
+db.sightings.aggregate([
+{
+  $match: {
+    date: {
+      $gt: ISODate('2022-01-01T00:00:00.000Z'),
+      $lt: ISODate('2023-01-01T00:00:00.000Z')
+    },
+    species_common: 'Eastern Bluebird'
+  }
+}, {
+  $count: 'bluebird_sightings_2022'
+}
+])
+```
+##### Lab `$out`
+```javascript
+db.sightings.aggregate([
+  {
+    $match: {
+      date: {
+        $gte: ISODate('2022-01-01T00:00:00.0Z'),
+        $lt: ISODate('2023-01-01T00:00:00.0Z')
+      }
+    }
+  },
+  {
+    $out: 'sightings_2022'
+  }
+])
+
+//findOne from the $out collection
+db.sightings_2022.findOne()
+
+```
+
+
 #### Summary MongoDB Aggregation
 In this unit, you learned how to use aggregation in MongoDB and create an aggregation pipeline. You also learned how to use several of the most common aggregation stages, including:
 
@@ -1311,12 +1418,265 @@ In this unit, you learned how to use aggregation in MongoDB and create an aggreg
 - $set
 - $out
 
+### MongoDB Aggregation with Java
+
+#### Using `$match` and `$group`
+
+Review the following code, which demonstrates how to build the `$match` and `$group` stages of an aggregation pipeline in MongoDB with Java.
+
+##### `$match` and `$group`
+
+In both of the following examples, we use the `Aggregates` builder class to build the `$match` and `$group` stages of an aggregation pipeline.
+
+First, we use `$match` to find an account that belongs to a customer. We start by creating a new method called `matchStage` that we call in the main method. In `matchStage`, we use the `Filters` builder class to specify which account we're searching for. The `match()` method creates a $match pipeline stage that matches incoming documents against the specified query filter and filters out documents that don't match.
+
+```java
+public static void main(String[] args) {
+    String connectionString = System.getProperty("mongodb.uri");
+    try (MongoClient mongoClient = MongoClients.create(connectionString)) {
+        MongoDatabase db = mongoClient.getDatabase("bank");
+        MongoCollection<Document> accounts = db.getCollection("accounts");
+        matchStage(accounts);
+    }
+}
+
+private static void matchStage(MongoCollection<Document> accounts){
+    Bson matchStage = Aggregates.match(Filters.eq("account_id", "MDB310054629"));
+    System.out.println("Display aggregation results");
+    accounts.aggregate(Arrays.asList(matchStage)).forEach(document->System.out.print(document.toJson()));
+}
+```
+
+In the next example, we use `$match` and `$group` to find the average and total balances of the customer's accounts. We start by creating a new method called `matchAndGroupStages` that we call in the main method. The `match()` method creates a `$match` pipeline stage that matches incoming documents against the specified query filter and filters out documents that don't match. The `group()` method then creates a `$group` pipeline stage to group documents by a specified expression and output a document for each distinct grouping.
+
+```java
+public static void main(String[] args) {
+    String connectionString = System.getProperty("mongodb.uri");
+    try (MongoClient mongoClient = MongoClients.create(connectionString)) {
+        MongoDatabase db = mongoClient.getDatabase("bank");
+        MongoCollection<Document> accounts = db.getCollection("accounts");
+        matchAndGroupStages(accounts);
+    }
+}
+
+private static void matchAndGroupStages(MongoCollection<Document> accounts){
+    Bson matchStage = Aggregates.match(Filters.eq("account_id", "MDB310054629"));
+    Bson groupStage = Aggregates.group("$account_type", sum("total_balance", "$balance"), avg("average_balance", "$balance"));
+    System.out.println("Display aggregation results");
+    accounts.aggregate(Arrays.asList(matchStage, groupStage)).forEach(document->System.out.print(document.toJson()));
+}
+
+```
+##### Lab `$match` & `group`
+
+**DemoApp.java**
+```java 
+package com.mdbu.app;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import com.mdbu.aggregations.Aggregation;
+import com.mdbu.crud.Crud;
+import com.mdbu.transactions.Transaction;
+import com.mongodb.client.*;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static com.mongodb.client.model.Aggregates.match;
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Projections.*;
+import static com.mongodb.client.model.Sorts.descending;
+import static com.mongodb.client.model.Sorts.orderBy;
+import static java.util.Arrays.asList;
 
 
+public class DemoApp {
+    public static void main(final String[] args) {
+        Logger root = (Logger) LoggerFactory.getLogger("org.mongodb.driver");
+        // Available levels are: OFF, ERROR, WARN, INFO, DEBUG, TRACE, ALL
+        root.setLevel(Level.WARN);
+
+        String connectionString = System.getenv("MONGODB_URI");
+        try (MongoClient client = MongoClients.create(connectionString)) {
+            MongoDatabase db = client.getDatabase("bank");
+            MongoCollection<Document> accounts = db.getCollection("accounts");
+            //Aggregation
+            Aggregation agg = new Aggregation(client);
+
+            agg.showAccountTypeSummary(accounts);
+        }
+    }
+}
+```
+**Aggregation.java**
+```java 
+package com.mdbu.aggregations;
+
+import com.mongodb.client.AggregateIterable;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Aggregates;
+
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import com.mdbu.aggregations.Aggregation;
+
+import static com.mongodb.client.model.Sorts.orderBy;
+import static java.util.Arrays.asList;
+import static com.mongodb.client.model.Aggregates.*;
+import static com.mongodb.client.model.Accumulators.*;
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Sorts.descending;
+
+import java.util.List;
+import java.util.Arrays;
+
+public class Aggregation {
+    private final MongoCollection<Document> collection;
+
+    public Aggregation(MongoClient client) {
+        this.collection = client.getDatabase("bank").getCollection("accounts");
+    }
+
+   public void showAccountTypeSummary(MongoCollection<Document> accounts) {
+        Bson matchStage = Aggregates.match(lt("balance",1000));
+        Bson groupStage = Aggregates.group("$account_type",sum("total_balance", "$balance"),avg("average_balance", "$balance"));
+        System.out.println("Display aggregation results");
+        accounts.aggregate(Arrays.asList(matchStage, groupStage)).forEach(document->System.out.print(document.toJson()));
+    }
+    
+}
+```
+
+#### Using `$sort` and `$project`
+Review the following code, which demonstrates how to build the `$sort` and `$project` stages of an aggregation pipeline in MongoDB with Java.
+
+#### `$sort` and `$project`
+In the following example, we use the `Aggregates` builder class to build the `$sort` and `$project` stages of an aggregation pipeline. This pipeline finds all checking accounts with a balance greater than 1500 and sorts the results in descending order. The query will return only four fields, including a newly computed Euro balance.
+
+The `match()` method creates a `$match` pipeline stage that matches incoming documents against the specified query filter and filters out documents that don't match. Then, the `sort()` method creates a `$sort` pipeline stage to sort by the specified criteria. Finally, the `project()` method creates a `$project` pipeline stage that projects specified document fields. Field projection in aggregation follows the same rules as field projection in queries.
+
+```java
+public static void main(String[] args) {
+    String connectionString = System.getProperty("mongodb.uri");
+    try (MongoClient mongoClient = MongoClients.create(connectionString)) {
+        MongoDatabase db = mongoClient.getDatabase("bank");
+        MongoCollection<Document> accounts = db.getCollection("accounts");
+        matchSortAndProjectStages(accounts);
+    }
+}
+
+private static void matchSortAndProjectStages(MongoCollection<Document> accounts){
+    Bson matchStage =
+            Aggregates.match(Filters.and(Filters.gt("balance", 1500), Filters.eq("account_type", "checking")));
+    Bson sortStage = Aggregates.sort(Sorts.orderBy(descending("balance")));
+    Bson projectStage = Aggregates.project(Projections.fields(Projections.include("account_id", "account_type", "balance"), Projections.computed("euro_balance", new Document("$divide", asList("$balance", 1.20F))), Projections.excludeId()));
+    System.out.println("Display aggregation results");
+    accounts.aggregate(asList(matchStage,sortStage, projectStage)).forEach(document -> System.out.print(document.toJson()));
+}
+
+```
+
+#### Lab Aggregation with the MongoDB Driver for Java (match,sort, project)
+
+**DemoApp.java**
+```java
+package com.mdbu.app;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import com.mdbu.aggregations.Aggregation;
+import com.mdbu.crud.Crud;
+import com.mdbu.transactions.Transaction;
+import com.mongodb.client.*;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static com.mongodb.client.model.Aggregates.match;
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Projections.*;
+import static com.mongodb.client.model.Sorts.descending;
+import static com.mongodb.client.model.Sorts.orderBy;
+import static java.util.Arrays.asList;
 
 
+public class DemoApp {
+    public static void main(final String[] args) {
+        Logger root = (Logger) LoggerFactory.getLogger("org.mongodb.driver");
+        // Available levels are: OFF, ERROR, WARN, INFO, DEBUG, TRACE, ALL
+        root.setLevel(Level.WARN);
 
+        String connectionString = System.getenv("MONGODB_URI");
+        try (MongoClient client = MongoClients.create(connectionString)) {
+            MongoDatabase db = client.getDatabase("bank");
+            MongoCollection<Document> accounts = db.getCollection("accounts");
+            //Aggregation
+            Aggregation agg = new Aggregation(client);
 
+            agg.showGBPBalancesForCheckingAccounts(accounts);
+        }
+    }
+}
 
+```
+**Aggregation.java**
+```java
+package com.mdbu.aggregations;
 
+import com.mongodb.client.AggregateIterable;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Aggregates;
 
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import com.mdbu.aggregations.Aggregation;
+
+import static com.mongodb.client.model.Sorts.orderBy;
+import static java.util.Arrays.asList;
+import static com.mongodb.client.model.Aggregates.*;
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Projections.*;
+import static com.mongodb.client.model.Sorts.descending;
+
+import java.util.List;
+
+public class Aggregation {
+    private final MongoCollection<Document> collection;
+
+    public Aggregation(MongoClient client) {
+        this.collection = client.getDatabase("bank").getCollection("accounts");
+    }
+
+    public void showGBPBalancesForCheckingAccounts(MongoCollection<Document> accounts) {
+        Bson matchStage = Aggregates.match(and(eq("account_type", "checking"), gt("balance", 1500)));
+        Bson sortStage = Aggregates.sort(orderBy(descending("balance")));
+        Bson projectStage = Aggregates.project(fields(include("account_id", "account_type", "balance"), excludeId()));
+        System.out.println("Display aggregation results");
+        accounts.aggregate(asList(matchStage,sortStage, projectStage)).forEach(document -> System.out.print(document.toJson()));
+    }
+    
+}
+```
