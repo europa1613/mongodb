@@ -10,14 +10,14 @@ loopArray(greetings);
 
 ```
 
-#### Lab: 
+##### Lab: 
 
 ```sh
 $ MY_ATLAS_CONNECTION_STRING=$(atlas clusters connectionStrings describe myAtlasClusterEDU | sed "1 d")
 $ mongosh -u myAtlasDBUser -p myatlas-001 $MY_ATLAS_CONNECTION_STRING
 ```
 
-### Drivers
+#### Drivers
 
 -   https://www.mongodb.com/docs/drivers/
 
@@ -48,7 +48,7 @@ public class Connection {
 mvn --quiet compile
 mvn --quiet exec:java -Dexec.mainClass=com.mdbu.app.Connection
 ```
-
+---
 ### MongoDB CRUD Operations: Insert and Find Documents
 
 #### Inserting Documents in a MongoDB Collection
@@ -365,7 +365,7 @@ db.sales.find({
     $or: [{ "items.name": "pens" }, { "items.tags": "writing" }],
 });
 ```
-
+---
 ### Replacing a Document in MongoDB
 
 To replace documents in MongoDB, we use the `replaceOne()` method. The `replaceOne()` method takes the following parameters:
@@ -391,7 +391,7 @@ db.books.replaceOne(
     }
 );
 ```
-
+---
 ### Updating MongoDB Documents by Using `updateOne()`
 
 Updating MongoDB Documents by Using `updateOne()`
@@ -406,7 +406,6 @@ db.podcasts.updateOne(
     {
         _id: ObjectId("5e8f8f8f8f8f8f8f8f8f8f8"),
     },
-
     {
         $set: {
             subscribers: 98562,
@@ -438,8 +437,7 @@ db.podcasts.updateOne(
 );
 ```
 
-#### Lab
-
+##### Lab
 ```javascript
 Atlas atlas-xbzsi3-shard-0 [primary] bird_data> db.birds.findOne({common_name: "Canada Goose"})
 {
@@ -451,14 +449,11 @@ Atlas atlas-xbzsi3-shard-0 [primary] bird_data> db.birds.findOne({common_name: "
   diet: [ 'grass', 'algae' ],
   last_seen: ISODate("2022-05-19T20:20:44.083Z")
 }
-
+//setting new array field
 db.birds.updateOne( {_id: ObjectId("6268413c613e55b82d7065d2")} , {$set: {tags: ["geese", "herbivore", "migration"]} });
-
-
 ```
 
 ##### `$push` and `$each`
-
 ```javascript
 Atlas atlas-xbzsi3-shard-0 [primary] bird_data> db.birds.findOne({_id: ObjectId("6268471e613e55b82d7065d7")})
 {
@@ -475,11 +470,9 @@ Atlas atlas-xbzsi3-shard-0 [primary] bird_data> db.birds.findOne({_id: ObjectId(
   ],
   last_seen: ISODate("2022-05-19T20:20:44.083Z")
 }
-
-
 ```
 
-Write a query that will update a document with an \_id of ObjectId("6268471e613e55b82d7065d7") and add the following to the diet array without removing any existing values:
+Write a query that will update a document with an `_id` of `ObjectId("6268471e613e55b82d7065d7")` and add the following to the diet array without removing any existing values:
 
 `diet: ["newts", "opossum", "skunks", "squirrels"]`
 
@@ -493,14 +486,14 @@ db.birds.updateOne(
     }
 );
 ```
-
+---
 #### Return, Update, and Add a Document
 
 Write a query to update a document in the birds collection.
 
--   In the filter document, use the common_name field with a value of Robin Redbreast to search for the document.
--   In the update document, use the $inc operator to increment the sightings field by 1. Additionally, your query should set a new field called last_updated to the current date and time, using new Date().
--   Add an option to the updateOne() method to create a new document if no documents match your query.
+-   In the filter document, use the `common_name` field with a value of "Robin Redbreast" to search for the document.
+-   In the update document, use the `$inc` operator to increment the sightings field by 1. Additionally, your query should set a new field called `last_updated` to the current date and time, using `new Date()`.
+-   Add an option to the `updateOne()` method to create a new document if no documents match your query.
 
 ```javascript
 db.birds.updateOne(
@@ -520,10 +513,10 @@ db.birds.updateOne(
     }
 );
 ```
-
+---
 #### Updating MongoDB Documents by Using findAndModify()
 
-The `findAndModify()` method is used to find and replace a single document in MongoDB. It accepts a filter document, a replacement document, and an optional options object. The following code shows an example:
+The `findAndModify()` method is used to find and update a single document in MongoDB. It accepts a filter document, a update document, and an optional options object. The following code shows an example:
 
 ```javascript
 db.podcasts.findAndModify({
@@ -532,6 +525,11 @@ db.podcasts.findAndModify({
     new: true,
 });
 ```
+
+**Note:** 
+- findAndModify() is equivalent to `updateOne()` plus `findOne()`. Meaning, update and to return the document you just updated. 
+- By default, MongoDB does not return the updated document, instead it returns the old. The `new` option set to `true` will return the just updated document.
+
 
 ##### Lab
 
@@ -542,10 +540,10 @@ db.birds.findAndModify({
     new: true,
 });
 ```
+---
+### Deleting Documents in MongoDB
 
-#### Deleting Documents in MongoDB
-
-To delete documents, use the deleteOne() or deleteMany() methods. Both methods accept a filter document and an options object.
+To delete documents, use the `deleteOne()` or `deleteMany()` methods. Both methods accept a filter document and an options object.
 
 ##### Delete One Document
 
@@ -562,7 +560,7 @@ The following code shows an example of the deleteMany() method:
 ```javascript
 db.podcasts.deleteMany({category: “crime”})
 ```
-
+---
 #### Sorting and Limiting Query Results in MongoDB
 
 Review the following code, which demonstrates how to sort and limit query results.
@@ -572,13 +570,11 @@ Review the following code, which demonstrates how to sort and limit query result
 Use `cursor.sort()` to return query results in a specified order. Within the parentheses of `sort()`, include an object that specifies the field(s) to sort by and the order of the sort. Use 1 for ascending order, and -1 for descending order.
 
 **Syntax:**
-
 ```javascript
 db.collection.find(<query>).sort(<sort>)
 ```
 
 **Example:**
-
 ```javascript
 // Return data on all music companies, sorted alphabetically from A to Z.
 db.companies.find({ category_code: "music" }).sort({ name: 1 });
@@ -629,7 +625,7 @@ db.sales
     .sort({ saleDate: -1 })
     .limit(3);
 ```
-
+---
 #### Returning Specific Data from a Query in MongoDB
 
 Review the following code, which demonstrates how to return selected fields from a query.
@@ -691,7 +687,7 @@ db.inspections.find(
     { business_name: 1, result: 1, _id: 0 }
 );
 ```
-
+---
 #### Counting Documents in a MongoDB Collection
 
 Review the following code, which demonstrates how to count the number of documents that match a query.
@@ -716,7 +712,7 @@ db.trips.countDocuments({});
 // Count number of trips over 120 minutes by subscribers
 db.trips.countDocuments({ tripduration: { $gt: 120 }, usertype: "Subscriber" });
 ```
-
+---
 ## MongoDB CRUD Operations in Java
 
 #### Inserting a document in Java apps
@@ -791,10 +787,8 @@ public void findDocuments(Bson query) {
     }
   }
 }
-
-
 ```
-
+---
 ### Updating Documents in Java Applications
 
 Review the following code, which demonstrates how to update documents in MongoDB with Java.
@@ -961,7 +955,6 @@ public class DemoApp {
         }
     }
 }
-
 ```
 
 ```java
@@ -993,8 +986,6 @@ public class Crud {
         System.out.println(updates);
     }
 }
-
-
 ```
 
 #### Deleting Documents in Java Applications
@@ -1042,7 +1033,7 @@ MongoCollection<Document> collection = database.getCollection("accounts");
 DeleteResult delResult = collection.deleteMany(Filters.eq("account_status", "dormant"));
 System.out.println(delResult.getDeletedCount());
 ```
-
+---
 ### Creating MongoDB Transactions in Java Applications
 
 Review the following code, which demonstrates how to create multi-document transactions in MongoDB with Java.
@@ -1143,7 +1134,6 @@ public class DemoApp {
         }
     }
 }
-
 ```
 
 ```java
@@ -1199,9 +1189,8 @@ public class Transaction {
         }
     }
 }
-
 ```
-
+---
 ### Introduction to MongoDB Aggregation
 
 This section contains key definitions for this lesson, as well as the code for an aggregation pipeline.
@@ -1480,7 +1469,7 @@ In this unit, you learned how to use aggregation in MongoDB and create an aggreg
 -   $count
 -   $set
 -   $out
-
+---
 ### MongoDB Aggregation with Java
 
 #### Using `$match` and `$group`
@@ -1657,7 +1646,8 @@ private static void matchSortAndProjectStages(MongoCollection<Document> accounts
 
 ```
 
-#### Lab Aggregation with the MongoDB Driver for Java (match,sort, project)
+#### Lab 
+##### Aggregation with the MongoDB Driver for Java (match, sort, project)
 
 **DemoApp.java**
 
@@ -1709,7 +1699,6 @@ public class DemoApp {
         }
     }
 }
-
 ```
 
 **Aggregation.java**
@@ -1752,7 +1741,7 @@ public class Aggregation {
 
 }
 ```
-
+---
 ### MongoDB Indexes
 
 #### Creating a Single Field Index
@@ -1798,10 +1787,10 @@ db.customers.getIndexes();
 
 Use `explain()` in a collection when running a query to see the Execution plan. This plan provides the details of the execution stages (IXSCAN , COLLSCAN, FETCH, SORT, etc.).
 
--   The IXSCAN stage indicates the query is using an index and what index is being selected.
--   The COLLSCAN stage indicates a collection scan is perform, not using any indexes.
--   The FETCH stage indicates documents are being read from the collection.
--   The SORT stage indicates documents are being sorted in memory.
+-   The `IXSCAN` stage indicates the query is using an index and what index is being selected.
+-   The `COLLSCAN` stage indicates a collection scan is perform, not using any indexes.
+-   The `FETCH` stage indicates documents are being read from the collection.
+-   The `SORT` stage indicates documents are being sorted in memory.
 
 ```javascript
 db.customers.explain().find({
@@ -1821,7 +1810,7 @@ db.customers
         email: 1,
     });
 ```
-
+---
 ### Understanding Multikey Indexes
 
 Review the code below, which demonstrates how multikey indexes work. If a single field or compound index includes an array field, then the index is a multikey index.
@@ -1949,7 +1938,7 @@ An Index covers a query when MongoDB does not need to fetch the data from memory
 
 In most cases, we can use projections to return only the required fields and cover the query. Make sure those fields in the projection are in the index.
 
-By adding the projection `{name:1,birthdate:1,_id:0}` in the previous query, we can limit the returned fields to only `name` and `birthdate`. These fields are part of the index and when we run the `explain()` command, the execution plan shows only two stages:
+By adding the projection `{name:1, birthdate:1, _id:0}` in the previous query, we can limit the returned fields to only `name` and `birthdate`. These fields are part of the index and when we run the `explain()` command, the execution plan shows only two stages:
 
 -   `IXSCAN` - Index scan using the compound index
 -   `PROJECTION_COVERED` - All the information needed is returned by the index, no need to fetch from memory
