@@ -793,7 +793,7 @@ public void findDocuments(Bson query) {
 
 Review the following code, which demonstrates how to update documents in MongoDB with Java.
 
-##### Using updateOne()
+##### Using `updateOne()`
 
 To update a single document, we use the `updateOne()` method on a MongoCollection object. The method accepts a filter that matches the document that we want to update, and an update statement that instructs the driver how to change the matching document. The `updateOne()` method updates only the first document that matches the filter.
 
@@ -1284,8 +1284,9 @@ db.sightings.aggregate([
             },
         },
     },
-])[
-    //output
+]);
+ //output
+[
     ({ _id: [41, -74], number_of_sightings: 1 },
     { _id: [40, -74], number_of_sightings: 3 },
     { _id: [40, -73], number_of_sightings: 1 })
@@ -1343,7 +1344,8 @@ db.zips.aggregate([
 db.sightings.aggregate([
     {
         $sort: {
-            "location.coordinates.1": -1, // <==== Array .<index> reference
+            "location.coordinates.1": -1, 
+            // <==== Array .<index> reference - zero based
         },
     },
     {
@@ -1436,8 +1438,20 @@ db.sightings.aggregate([
 ]);
 ```
 
-##### Lab `$out`
+#### `$out`
+Takes the documents returned by the aggregation pipeline and writes them to a specified collection. Starting in MongoDB 4.4, you can specify the output database.
 
+The `$out` stage must be the last stage in the pipeline. The `$out` operator lets the aggregation framework return result sets of any size.
+
+**Syntax**
+
+```javascript
+{ $out: { db: "<output-db>", coll: "<output-collection>" } }
+
+{ $out: "<output-collection>" } // Output collection is in the same database
+```
+
+##### Lab
 ```javascript
 db.sightings.aggregate([
     {
@@ -1449,7 +1463,8 @@ db.sightings.aggregate([
         },
     },
     {
-        $out: "sightings_2022",
+        $out: "sightings_2022", 
+        //creates a collection in the same db
     },
 ]);
 
@@ -1480,7 +1495,7 @@ Review the following code, which demonstrates how to build the `$match` and `$gr
 
 In both of the following examples, we use the `Aggregates` builder class to build the `$match` and `$group` stages of an aggregation pipeline.
 
-First, we use `$match` to find an account that belongs to a customer. We start by creating a new method called `matchStage` that we call in the main method. In `matchStage`, we use the `Filters` builder class to specify which account we're searching for. The `match()` method creates a $match pipeline stage that matches incoming documents against the specified query filter and filters out documents that don't match.
+First, we use `$match` to find an account that belongs to a customer. We start by creating a new method called `matchStage` that we call in the main method. In `matchStage`, we use the `Filters` builder class to specify which account we're searching for. The `match()` method creates a `$match` pipeline stage that matches incoming documents against the specified query filter and filters out documents that don't match.
 
 ```java
 public static void main(String[] args) {
@@ -1825,7 +1840,7 @@ db.customers.createIndex({
 });
 ```
 
-#### View the Indexes used in a Collection
+##### View the Indexes used in a Collection
 
 Use `getIndexes()` to see all the indexes created in a collection.
 
@@ -1900,7 +1915,7 @@ db.customers.createIndex({
 });
 ```
 
-#### View the Indexes used in a Collection
+##### View the Indexes used in a Collection
 
 Use `getIndexes()` to see all the indexes created in a collection.
 
@@ -1976,7 +1991,7 @@ db.accounts
 Review the code below, which demonstrates how to delete indexes in a collection.
 
 
-#### View the Indexes used in a Collection
+##### View the Indexes used in a Collection
 Use `getIndexes()` to see all the indexes created in a collection. There is always a default index in every collection on `_id` field. This index is used by MongoDB internally and cannot be deleted.
 ```javascript
 db.customers.getIndexes()
@@ -2009,3 +2024,16 @@ db.collection.dropIndexes([
   'index1name', 'index2name', 'index3name'
   ])
 ```
+### Certification Deep Dive
+
+**[See Video](https://learn.mongodb.com/learn/course/certification-deep-dive-with-sonali-mamgain/main/certification-deep-dive-with-sonali-mamgain/)**
+
+#### Further Reading
+![Alt text](<links-certification.png>)
+
+**Links:**
+- learn.mongodb.com
+- docs.mongodb.com
+
+**Must read through once:**
+- https://www.mongodb.com/docs/manual/tutorial/
