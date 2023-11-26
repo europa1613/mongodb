@@ -2024,9 +2024,9 @@ db.collection.dropIndexes([
   'index1name', 'index2name', 'index3name'
   ])
 ```
-### Certification Deep Dive
+### Certification Deep Dive - Test Objective
 
-**[See Video](https://learn.mongodb.com/learn/course/certification-deep-dive-with-sonali-mamgain/main/certification-deep-dive-with-sonali-mamgain/)**
+#### [See Video](https://learn.mongodb.com/learn/course/certification-deep-dive-with-sonali-mamgain/main/certification-deep-dive-with-sonali-mamgain/)
 
 #### Further Reading
 ![Alt text](<links-certification.png>)
@@ -2037,3 +2037,8 @@ db.collection.dropIndexes([
 
 **Must read through once:**
 - https://www.mongodb.com/docs/manual/tutorial/
+
+
+## Exam Registration
+https://learn.mongodb.com/courses/mongodb-associate-developer-exam-java
+
